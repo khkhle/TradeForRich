@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <%~ include('./deps.eta')%>
+    <title>Signin</title>
+ 
+</head>
+<body>
+
+    <form id="signinForm" action="/signin" method="POST">
+        <div class="container w-25 mx-auto mt-5 bg-dark py-3">
+            <h2 class="text-white text-center">Trade for Rich</h2>
+            <hr class="border border-light w-75 mx-auto bg-light" style="height: 2px;">
+    
+            <div class="mb-3">
+                <label for="email" class="form-label text-white">Email address</label>
+                <input type="email" class="form-control" id="email" name="email" placeholder="name@example.com" required>
+            </div> 
+        
+            <div class="mb-3">
+                <label for="password" class="form-label text-white">Password</label>
+                <input type="password" id="password" class="form-control" name="password" aria-describedby="passwordHelpBlock" required placeholder="Your password">
+            </div>
+
+            <% if (it.success===false) { %>
+                <div class="container w-100 mx-auto mt-3">
+                  <div class="alert alert-danger">
+                    <%= it.error %>
+                  </div>
+                </div>
+            <% } %>
+    
+    
+            <div class="text-center mt-4 mb-2">
+                <button class="btn btn-outline-success mb-5 my-2 my-sm-0 text-white bg-success" type="submit" >Sign in</button>
+            </div>
+        </div>
+    </form>
+    
+
+    <div class="container w-25 mx-auto mt-3 text-center">
+        <p>Not yet a member? <a class="text-success" style="font-weight: bold; text-decoration: underline;" href="/signup">Sign up</a></p>
+    </div>
+
+    <%~ include('../footer/footer.eta') %>
+    
+</body>
+</html>

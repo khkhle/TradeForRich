@@ -1,0 +1,42 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <a class="navbar-brand text-white" href="#">Trade For Rich</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
+    <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+      <li class="nav-item">
+        <a class="nav-link text-white" href="/home">Home</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link text-white" href="/markets">Markets</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link text-white" href="/news">News</a>
+      </li>
+
+      <% if (it.user) { %>
+        <li class="nav-item">
+            <a class="nav-link text-white" href="/favorite">Favorite</a>
+        </li>
+      <% }%>
+    </ul>
+
+    <%~ include('search.eta') %>
+
+    <ul class="navbar-nav mt-2 mt-lg-0">
+      <% if (it.user) { %>
+          <li class="nav-item">    
+            <a class="nav-link text-white" href="/signout">Sign out</a>
+          </li>
+      <% } else { %>
+        <li class="nav-item mt-3">
+          <p class="nav-link"><a class="text-white" href='/signup'>Sign up</a>/<a class="text-white" href='/signin'>Sign in</a></p>
+        </li>
+      <% } %>
+
+    </ul>
+    
+  </div>
+</nav>

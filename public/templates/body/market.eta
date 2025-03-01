@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <%~ include("./deps.eta") %> 
+    <title><%= it.market.name %></title>
+</head>
+<body>
+    <%~ include("../nav/navigation.eta", {user: it.user}) %>
+
+    <div class="container my-5">
+        
+        <div class="row">
+            <div class="col">
+                <h4><%= it.market.name%></h4>
+                <h6><%= it.market.code%></h6>
+            </div>
+    
+            <div class="col text-right">
+                <h5>Loading...</h5>
+                <h5>-</h5>
+            </div>
+
+           
+            <% if(it.user) { 
+                const isFav = it.user.favMars[it.market.type] 
+                    ? Array.from(it.user.favMars[it.market.type]).some(fav => fav.code === it.market.code)
+                    : false;
+            %>
+                <div class="col-lg-1">
+                    <form id="saveForm" method="POST" action="/<%= isFav ? 'unsaveMarket' : 'saveMarket' %>/<%= it.market.type %>/<%= it.market.code %>/market">
+                        <button id="saveBtn" class="btn <%= isFav ? 'btn-secondary bg-gray' : 'btn-outline-success bg-success' %> text-white" type="submit">
+                            <%= isFav ? 'Unsave' : 'Save' %>
+                        </button>
+                    </form>
+                </div>
+            <% } %>
+        </div><hr>
+
+        <div class="container my-5">
+            <div class="row">
+                <div class="col-md-6">
+
+                </div>
+
+                <div class="col-md-4">
+
+                </div>
+            </div>
+        </div>
+        
+    </div>
+
+    <script>
+
+    </script>
+
+    
+</body>
+</html>

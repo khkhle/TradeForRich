@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <%~ include("./deps.eta") %>
+    <title>Markets</title>
+    <style>
+        button {
+            pointer-events: auto;
+        }
+    </style>
+</head>
+<body>
+    <%~ include("../nav/navigation.eta", {user: it.user}) %>
+
+    <div class="container my-5">
+        <nav class="nav nav-tabs">
+            <% 
+                const marketKeys = Object.keys(it.markets); 
+                const currentMarket = it.current_market || marketKeys[0];  
+            %>
+
+            <% marketKeys.forEach(market => { %>
+                <form method="GET" action="/markets/<%= market %>">
+                    <button type="submit" class="nav-link <%= market === currentMarket ? 'active' : '' %>">
+                        <%= market %>
+                    </button>
+                </form>
+            <% }); %>
+        </nav>
+
+        <div class="tab-content">
+            <% marketKeys.forEach(marketType => { %>
+                <div class="tab-pane <%= marketType === currentMarket ? 'active show fade' : 'fade' %>" id="<%= marketType %>">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">Name</th>
+                                <th scope="col">Code</th>
+                                <th scope="col">Current</th>
+                                <th scope="col">Change</th>
+                                <% if (it.user) { %>
+                                    <th scope="col">Actions</th>
+                                <% } %>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% it.markets[marketType].forEach(market => { 
+                                const isFav = it.user && it.user.favMars[marketType] && it.user.favMars[marketType].some(fav => fav.code === market.code);
+                            %>
+                                <tr data-code="<%= market.code %>">
+                                    <td>
+                                        <a href="/markets/<%= marketType %>/<%= market.code %>">
+                                            <%= market.name %>
+                                        </a>
+                                    </td>
+                                    <td><%= market.code %></td>
+                                    <td class="price">Loading...</td>
+                                    <td class="change">-</td>
+                                    
+                                    <% if (it.user) { %>
+                                        <td>
+                                            <form method="POST" action="/<%= isFav ? 'unsaveMarket' : 'saveMarket' %>/<%= marketType %>/<%= market.code %>/markets">
+                                                <% if (it.csrfToken) { %>
+                                                    <input type="hidden" name="_csrf" value="<%= it.csrfToken %>">
+                                                <% } %>
+                                                <button class="btn <%= isFav ? 'btn-secondary bg-gray' : 'btn-outline-success bg-success' %> text-white" type="submit">
+                                                    <%= isFav ? 'Unsave' : 'Save' %>
+                                                </button>
+                                            </form>
+                                        </td>
+                                    <% } %>
+                                </tr>
+                            <% }); %>
+                        </tbody>
+                    </table>
+                </div>
+            <% }); %>
+        </div>
+    </div>
+
+    <%~ include('../footer/footer.eta') %>
+</body>
+</html>

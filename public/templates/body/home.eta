@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <%~ include("./deps.eta") %> 
+    <title>Home</title>
+    <style>
+        .show-more-container {
+            text-align: right; 
+            font-size: 20px;
+        }
+
+        .header-container {
+            margin-left: 1%;
+        }
+
+        .card {
+            border: none;
+        }
+    </style>
+</head>
+<body>
+    <%~ include("../nav/navigation.eta", {user: it.user}) %>
+
+    <div class="container mt-5">
+        <div class="header-container">
+            <h4>Recent News</h4><hr>
+        </div>
+
+        <div class="row my-5">
+            <div class="col-md-4">
+                <div class="card">
+                    <img src="<%= it.news[0].image_link%>" class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <p class="card-text"><%= new Date(it.news[0].date).toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' }) %></p>
+                        <h5 class="card-title"><%= it.news[0].name%></h5><hr>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-5">
+                <div class="row">
+                    <% it.news.slice(1,3).forEach(article => { %>
+                        <div class="col-md-6">
+                            <div class="card">
+                                <img src="<%= article.image_link%>" class="card-img-top" alt="...">
+                                <div class="card-body">
+                                    <p class="card-text"><%= new Date(article.date).toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' }) %></p>
+                                    <h5 class="card-title"><%= article.name%></h5><hr>
+                                </div>
+                            </div>
+                        </div>
+                    <% }); %>
+
+                    <% it.news.slice(3,5).forEach(article => { %>
+                        <div class="col-md-6">
+                            <div class="card">
+                                <img src="<%= article.image_link%>" class="card-img-top" alt="...">
+                                <div class="card-body">
+                                    <p class="card-text"><%= new Date(article.date).toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' }) %></p>
+                                    <h5 class="card-title"><%= article.name%></h5><hr>
+                                </div>
+                            </div>
+                        </div>
+                    <% }); %>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="row">
+                    <% it.news.slice(5,8).forEach(article => { %>
+                        <div class="card">
+                            <div class="card-body">
+                                <p class="card-text"><%= new Date(article.date).toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' }) %></p>
+                                <h5 class="card-title"><%= article.name%></h5><hr>
+                            </div>
+                        </div>
+                    <% }); %>
+                </div>
+            </div>
+        </div>
+
+        <div class="show-more-container">
+            <a class="text-success" style="font-weight: bold;" href="/allNews">Show more</a>
+        </div>
+    </div>
+
+    <div class="container mt-5">
+        <div class="header-container">
+            <h4>Common Markets</h4>
+        </div>
+        <table class="table mb-3">
+            <thead>
+                <tr>
+                    <th scope="col">Name</th>
+                    <th scope="col">Code</th>
+                    <th scope="col">Current</th>
+                    <th scope="col">Change</th>
+                    <% if (it.user) { %>
+                        <th scope="col">Actions</th>
+                    <% } %>
+                </tr>
+            </thead>
+            <tbody>
+                <% if (it.markets) { %>
+                    <% it.markets.forEach(market => { 
+                        const isFav = it.user && it.user.favMars[market.type] 
+                            ? Array.from(it.user.favMars[market.type]).some(fav => fav.code === market.code)
+                            : false;
+                    %>
+                        <tr data-code="<%= market.code %>">
+                            <td><a href="/markets/<%= market.type %>/<%= market.code %>"><%= market.name %></a></td>
+                            <td><%= market.code %></td>
+                            <td class="price">Loading...</td>
+                            <td class="change">-</td>
+                            
+
+                            <% if (it.user) { %>
+                                <td>
+                                    <form method="POST" action="/<%= isFav ? 'unsaveMarket' : 'saveMarket' %>/<%= market.type %>/<%= market.code %>/home">
+                                        <button class="btn <%= isFav ? 'btn-secondary bg-gray' : 'btn-outline-success bg-success' %> text-white" type="submit">
+                                            <%= isFav ? 'Unsave' : 'Save' %>
+                                        </button>
+                                    </form>
+                                </td>
+                            <% } %>
+                        </tr> 
+                    <% }); %>
+                <% } %>
+            </tbody>
+        </table>    
+    </div>
+
+    <%~ include('../footer/footer.eta') %>
+    <script>
+        
+
+        document.addEventListener("DOMContentLoaded", async () => {
+            console.log("Script Loaded Successfully");
+
+            const twelveDataKey = 'Your key';
+            let twelveDataAPI = `https://api.twelvedata.com/time_series?interval=1min&outputsize=12&apikey=${twelveDataKey}&source=docs`;
+
+            const getValueNow = async (code) => {
+                try {
+                    const API = `${twelveDataAPI}&symbol=${code}`;
+                    console.log(`Fetching latest data from: ${API}`);
+
+                    const response = await fetch(API);
+                    const data = await response.json();
+
+                    if (!data.values || data.values.length === 0) {
+                        console.error(`No data available for ${code}`);
+                        return { close: "N/A", currency: "" };
+                    }
+
+                    return { close: data.values[0].close, currency: data.meta.currency };
+                } catch (error) {
+                    console.error(`Error fetching data for ${code}:`, error);
+                    return { close: "Error", currency: "" };
+                }
+            };
+
+            const getValuePreDay = async (code) => {
+                try {
+                    const API = `https://api.twelvedata.com/time_series?interval=1day&outputsize=2&apikey=${twelveDataKey}&symbol=${code}`;
+                    console.log(`Fetching previous day data from: ${API}`);
+
+                    const response = await fetch(API);
+                    const data = await response.json();
+
+                    console.log(data)
+
+                    if (!data.values || data.values.length < 2) {
+                        console.error(`Not enough data for ${code}`);
+                        return { close: "N/A", currency: "" };
+                    }
+
+                    return { close: data.values[1].close, currency: data.meta.currency }; // Previous day's close price
+                } catch (error) {
+                    console.error(`Error fetching previous day data for ${code}:`, error);
+                    return { close: "Error", currency: "" };
+                }
+            };
+
+            const updateValues = async () => {
+                console.log("Updating market values...");
+
+                const marketRows = document.querySelectorAll("tr[data-code]");
+                const codes = [];
+
+                marketRows.forEach(row => {
+                    const code = row.getAttribute("data-code");
+                    codes.push(code);
+                });
+
+                for (let code of codes) {
+                    const row = document.querySelector(`tr[data-code="${code}"]`);
+                    if (!row) continue;
+
+                    const dataNow = await getValueNow(code);
+                    const dataPrevDay = await getValuePreDay(code);
+
+                    const closeNow = parseFloat(dataNow.close);
+                    const closePrevDay = parseFloat(dataPrevDay.close);
+                    const changeElement = row.querySelector('.change');
+
+                    let change = "N/A";
+                    let color = "black";
+
+                    if (!isNaN(closeNow) && !isNaN(closePrevDay)) {
+                        change = -(100 - (closeNow / closePrevDay) * 100).toFixed(2) + "%";
+
+                        if (parseFloat(change) > 0) {
+                            color = "green";
+                        } else if (parseFloat(change) < 0) {
+                            color = "red";
+                        }
+                    }
+
+                    row.querySelector('.price').textContent = `${closeNow} ${dataNow.currency}`;
+                    changeElement.textContent = change;
+                    changeElement.style.color = color;
+                }
+            };
+
+            // **Run updateValues immediately when the page loads**
+            await updateValues(); 
+
+            // **Schedule updates every 7.5 seconds**
+            setInterval(updateValues, 7500);
+        });
+
+
+   </script>
+</body>
+</html>
