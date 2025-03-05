@@ -17,7 +17,7 @@ app.get('/signup',(c)=>c.html(eta.render('body/signup.eta',{success:true})))
 app.get('/signin',(c)=>c.html(eta.render('body/signin.eta',{success:true})))
 app.get('/signout',authenticationController.signout)
 app.get('/notfound',(c)=>c.text('404 not found'))
-app.get('/allNews',newsController.getAllNews)
+app.get('/allNews/:page',newsController.getAllNews)
 app.get('/favorite',favoriteController.getFavorite)
 
 app.post("/signup",authenticationController.signup)
