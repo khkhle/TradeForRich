@@ -30,38 +30,50 @@
 
         <div class="row my-5">
             <div class="col-md-4">
-                <div class="card">
-                    <img src="<%= it.news[0].image_link%>" class="card-img-top" alt="...">
-                    <div class="card-body">
-                        <p class="card-text"><%= new Date(it.news[0].date).toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' }) %></p>
-                        <h5 class="card-title"><%= it.news[0].name%></h5><hr>
+                <a href="<%= it.news[0].link %>" class="card-link" style="text-decoration: none; color: inherit;">
+                    <div class="card">
+                        <img src="<%= it.news[0].image_link%>" class="card-img-top" alt="...">
+                        <div class="card-body">
+                            <p class="card-text"><%= new Date(it.news[0].date).toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' }) %></p>
+                            <h5 class="card-title"><%= it.news[0].name%></h5><hr>
+                        </div>
                     </div>
-                </div>
+                </a>
             </div>
 
             <div class="col-md-5">
                 <div class="row">
                     <% it.news.slice(1,3).forEach(article => { %>
                         <div class="col-md-6">
-                            <div class="card">
-                                <img src="<%= article.image_link%>" class="card-img-top" alt="...">
-                                <div class="card-body">
-                                    <p class="card-text"><%= new Date(article.date).toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' }) %></p>
-                                    <h5 class="card-title"><%= article.name%></h5><hr>
+                            <a href="<%= article.link %>" class="card-link" style="text-decoration: none; color: inherit;">
+                                <div class="card">
+                                    <img src="<%= article.image_link%>" class="card-img-top" alt="...">
+                                    <div class="card-body">
+                                        <p class="card-text">
+                                            <%= new Date(article.date).toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' }) %>
+                                        </p>
+                                        <h5 class="card-title"><%= article.name %></h5>
+                                        <hr>
+                                    </div>
                                 </div>
-                            </div>
+                             </a>
                         </div>
                     <% }); %>
 
                     <% it.news.slice(3,5).forEach(article => { %>
                         <div class="col-md-6">
-                            <div class="card">
-                                <img src="<%= article.image_link%>" class="card-img-top" alt="...">
-                                <div class="card-body">
-                                    <p class="card-text"><%= new Date(article.date).toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' }) %></p>
-                                    <h5 class="card-title"><%= article.name%></h5><hr>
+                            <a href="<%= article.link %>" class="card-link" style="text-decoration: none; color: inherit;">
+                                <div class="card">
+                                    <img src="<%= article.image_link%>" class="card-img-top" alt="...">
+                                    <div class="card-body">
+                                        <p class="card-text">
+                                            <%= new Date(article.date).toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' }) %>
+                                        </p>
+                                        <h5 class="card-title"><%= article.name %></h5>
+                                        <hr>
+                                    </div>
                                 </div>
-                            </div>
+                            </a>    
                         </div>
                     <% }); %>
                 </div>
@@ -70,12 +82,18 @@
             <div class="col-md-3">
                 <div class="row">
                     <% it.news.slice(5,8).forEach(article => { %>
-                        <div class="card">
-                            <div class="card-body">
-                                <p class="card-text"><%= new Date(article.date).toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' }) %></p>
-                                <h5 class="card-title"><%= article.name%></h5><hr>
+                        <a href="<%= article.link %>" class="card-link" style="text-decoration: none; color: inherit;">
+                            <div class="card">
+                                <img src="<%= article.image_link%>" class="card-img-top" alt="...">
+                                <div class="card-body">
+                                    <p class="card-text">
+                                        <%= new Date(article.date).toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' }) %>
+                                    </p>
+                                    <h5 class="card-title"><%= article.name %></h5>
+                                    <hr>
+                                </div>
                             </div>
-                        </div>
+                        </a>
                     <% }); %>
                 </div>
             </div>
